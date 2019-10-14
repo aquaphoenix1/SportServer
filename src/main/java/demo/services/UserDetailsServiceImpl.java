@@ -25,10 +25,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(userName + " not found");
         }
 
-        Set<GrantedAuthority> setAuths = new HashSet<>();
-        setAuths.add(new SimpleGrantedAuthority("ROLE_USER"));
+        Set<GrantedAuthority> setAuthority = new HashSet<>();
+        setAuthority.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-        List<GrantedAuthority> authorities = new ArrayList<>(setAuths);
+        List<GrantedAuthority> authorities = new ArrayList<>(setAuthority);
 
         return new User(client.getEmail(), client.getPassword(), authorities);
     }
