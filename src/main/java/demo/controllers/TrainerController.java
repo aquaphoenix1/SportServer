@@ -18,7 +18,7 @@ public class TrainerController {
         return new ResponseEntity(list, HttpStatus.OK);
     }
 
-    @GetMapping("/trainers")
+    @GetMapping(value = "/trainers", params = {"id"})
     public ResponseEntity<?> trainers(@RequestParam(value = "id") Integer id) {
         TrainerEntity entity = TrainerDAO.findById(id);
         return new ResponseEntity(entity, HttpStatus.OK);

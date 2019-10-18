@@ -18,8 +18,8 @@ public class LobbyController {
         return new ResponseEntity(list, HttpStatus.OK);
     }
 
-    @GetMapping("/lobbies")
-    public ResponseEntity<?> profiles(@RequestParam(value = "id") Integer id) {
+    @GetMapping(value = "/lobbies", params = {"id"})
+    public ResponseEntity<?> profiles(@RequestParam(value = "id", required = true) Integer id) {
         LobbyEntity lobby = LobbyDAO.findById(id);
         return new ResponseEntity(lobby, HttpStatus.OK);
     }

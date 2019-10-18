@@ -19,7 +19,7 @@ public class SessionController {
         return new ResponseEntity(list, HttpStatus.OK);
     }
 
-    @GetMapping("/sessions")
+    @GetMapping(value = "/sessions", params = {"id"})
     public ResponseEntity<?> getSessionById(@RequestParam(value = "id") Integer id) {
         SessionEntity entity = SessionDAO.findById(id);
         return new ResponseEntity(entity, HttpStatus.OK);

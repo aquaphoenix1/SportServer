@@ -45,7 +45,7 @@ public class MainConfiguration extends WebSecurityConfigurerAdapter {
         http.cors()
                 .and().httpBasic()
                 .and().csrf().disable().
-                authorizeRequests().antMatchers("/login", "/logout", "/registration", "/reset").permitAll();
+                authorizeRequests().antMatchers("/", "/login", "/logout", "/registration", "/reset").permitAll();
 
         http.authorizeRequests().anyRequest().authenticated();
 
@@ -55,5 +55,7 @@ public class MainConfiguration extends WebSecurityConfigurerAdapter {
                 .usernameParameter("username")
                 .passwordParameter("password");
         http.logout().permitAll().logoutUrl("/logout").invalidateHttpSession(true);
+
+        http.authorizeRequests().antMatchers("/js/**").permitAll();
     }
 }

@@ -19,7 +19,7 @@ public class ClientController {
         return new ResponseEntity(list, HttpStatus.OK);
     }
 
-    @GetMapping("/clients")
+    @GetMapping(value = "/clients", params = {"id"})
     public ResponseEntity<?> profiles(@RequestParam(value = "id") String id) {
         ClientEntity client = ClientDAO.findById(id);
         client.setPassword("");

@@ -18,7 +18,7 @@ public class ClientSessionController {
         return new ResponseEntity(list, HttpStatus.OK);
     }
 
-    @GetMapping("/client_sessions")
+    @GetMapping(value = "/client_sessions", params = {"email", "sessionId"})
     public ResponseEntity<?> getSessionById(@RequestParam(value = "email") String email, @RequestParam(value = "sessionId") int sessionId) {
         ClientSessionEntity entity = ClientSessionDAO.findById(email, sessionId);
         return new ResponseEntity(entity, HttpStatus.OK);
