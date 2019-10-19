@@ -13,7 +13,7 @@ public class ProfileDAO extends DAO {
         }
     }
 
-    public static List<ProfileEntity> getAll(){
+    public List<ProfileEntity> getAll(){
         try (Session session = getSession()) {
             return session.createQuery("from ProfileEntity ").list();
         }

@@ -56,7 +56,9 @@
 package demo.controllers;
 
 import demo.dao.ProfileDAO;
+import demo.dao.repository.IProfileRepository;
 import demo.entities.ProfileEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,9 +68,21 @@ import java.util.LinkedHashMap;
 @CrossOrigin
 @RestController
 public class ProfileController {
+    private IProfileRepository profileRepository;
+
+    @Autowired
+    public ProfileController(IProfileRepository profileRepository){
+        this.profileRepository = profileRepository;
+    }
+
     @GetMapping("/profiles/all")
     public ResponseEntity<?> allProfiles() {
-        return new ResponseEntity(ProfileDAO.getAll(), HttpStatus.OK);
+        try {
+            return new ResponseEntity(/*ProfileDAO.getAll()*/profileRepository.findAll(), HttpStatus.OK);
+        }
+        catch (Exception e){
+            return null;
+        }
     }
 
     @GetMapping(value = "/profiles", params = {"id"})
