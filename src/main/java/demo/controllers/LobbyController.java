@@ -1,40 +1,54 @@
 package demo.controllers;
 
-import demo.dao.LobbyDAO;
+import demo.dao.repository.LobbyEntityRepository;
 import demo.entities.LobbyEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 
 @CrossOrigin
 @RestController
 public class LobbyController {
+    private LobbyEntityRepository lobbyEntityRepository;
+
+    @Autowired
+    public LobbyController(LobbyEntityRepository lobbyEntityRepository) {
+        this.lobbyEntityRepository = lobbyEntityRepository;
+    }
+
     @GetMapping("/lobbies/all")
     public ResponseEntity<?> allProfiles() {
-        List<LobbyEntity> list = LobbyDAO.getAll();
-        return new ResponseEntity(list, HttpStatus.OK);
+        return new ResponseEntity(lobbyEntityRepository.findAll(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/lobbies", params = {"id"})
     public ResponseEntity<?> profiles(@RequestParam(value = "id", required = true) Integer id) {
-        LobbyEntity lobby = LobbyDAO.findById(id);
-        return new ResponseEntity(lobby, HttpStatus.OK);
+        return new ResponseEntity(lobbyEntityRepository.findById(id), HttpStatus.OK);
     }
 
     @PostMapping(value = "/lobbies", produces = "application/json", consumes = "application/json")
     @ResponseBody
     public ResponseEntity<?> addProfiles(@RequestParam(value = "action") String action,
                                          @RequestBody LinkedHashMap entity) {
+        LinkedHashMap data = ((LinkedHashMap) entity.get("data"));
+        String description = data.get("description").toString();
+
         if (action.equals("update")) {
-            LobbyDAO.update(Integer.valueOf(((LinkedHashMap) entity.get("data")).get("lobbyId").toString()),
-                    ((LinkedHashMap) entity.get("data")).get("description").toString());
+            int id = Integer.valueOf(data.get("lobbyId").toString());
+            LobbyEntity lobbyEntity = lobbyEntityRepository.findById(id).get();
+            lobbyEntity.setDescription(description);
+
+            lobbyEntityRepository.save(lobbyEntity);
 
             return new ResponseEntity(HttpStatus.OK);
         } else {
-            LobbyDAO.add(((LinkedHashMap) entity.get("data")).get("description").toString());
+            LobbyEntity lobbyEntity = new LobbyEntity();
+            lobbyEntity.setDescription(description);
+
+            lobbyEntityRepository.save(lobbyEntity);
 
             return new ResponseEntity(HttpStatus.OK);
         }
@@ -43,7 +57,7 @@ public class LobbyController {
     @GetMapping("/lobbies/remove")
     public ResponseEntity<?> removeProfiles(@RequestParam(value = "id") Integer id) {
         try {
-            LobbyDAO.remove(id);
+            lobbyEntityRepository.deleteById(id);
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

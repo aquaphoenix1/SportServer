@@ -1,9 +1,9 @@
 package demo.dao.repository;
 
-import demo.entities.ProfileEntity;
+import demo.entities.SessionEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IProfileRepository extends CrudRepository<ProfileEntity, Integer> {
+public interface SessionEntityRepository extends CrudRepository<SessionEntity, Integer> {
 }

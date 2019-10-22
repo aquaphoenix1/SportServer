@@ -3,7 +3,7 @@ package demo.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "client_session", schema = "public", catalog = "SportDB")
+@Table(name = "client_session", schema = "public")
 @IdClass(ClientSessionEntityPK.class)
 public class ClientSessionEntity {
     private String mail;

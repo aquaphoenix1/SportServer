@@ -1,7 +1,9 @@
 package demo.services;
 
-import demo.dao.ClientDAO;
+//import demo.dao.ClientDAO;
+import demo.dao.repository.ClientEntityRepository;
 import demo.entities.ClientEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -10,16 +12,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+    private ClientEntityRepository clientEntityRepository;
+
+    @Autowired
+    public UserDetailsServiceImpl(ClientEntityRepository clientEntityRepository){
+        this.clientEntityRepository = clientEntityRepository;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        ClientEntity client = ClientDAO.findById(userName);
+        ClientEntity client = clientEntityRepository.findById(userName).get();
 
         if(client == null){
             throw new UsernameNotFoundException(userName + " not found");

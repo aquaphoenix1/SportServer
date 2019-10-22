@@ -3,14 +3,14 @@ package demo.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "lobby", schema = "public", catalog = "SportDB")
+@Table(name = "lobby", schema = "public")
 public class LobbyEntity {
     private int lobbyId;
     private String description;
 
     @Id
     @Column(name = "lobby_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator="lobbySeq")
     public int getLobbyId() {
         return lobbyId;
     }

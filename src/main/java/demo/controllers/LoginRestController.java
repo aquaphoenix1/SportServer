@@ -63,7 +63,7 @@
 
 package demo.controllers;
 
-import demo.dao.ClientDAO;
+//import demo.dao.ClientDAO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -88,7 +88,7 @@ public class LoginRestController {
         return new ResponseEntity("login", HttpStatus.OK);
     }
 
-    @GetMapping("/logout")
+    @GetMapping(value = "/logout", params = {"logout"})
     public ResponseEntity<?> getLogout(@RequestParam(value = "logout", required = false) Boolean logout) {
         return new ResponseEntity((logout != null && logout) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
@@ -102,7 +102,7 @@ public class LoginRestController {
         int age = Integer.valueOf(entity.get("age").toString());
 
         try {
-            ClientDAO.save(email, password, name, surname, age);
+            //ClientDAO.save(email, password, name, surname, age);
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -116,7 +116,7 @@ public class LoginRestController {
         String password = encode(entity.get("password").toString());
 
         try {
-            ClientDAO.updatePassword(email, password);
+            //ClientDAO.updatePassword(email, password);
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

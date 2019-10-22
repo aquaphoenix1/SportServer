@@ -1,7 +1,10 @@
 package demo.controllers;
 
-import demo.dao.TrainerDAO;
+import demo.dao.repository.ProfileEntityRepository;
+import demo.dao.repository.TrainerEntityRepository;
+import demo.entities.ProfileEntity;
 import demo.entities.TrainerEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,16 +15,23 @@ import java.util.List;
 @CrossOrigin
 @RestController
 public class TrainerController {
+    private TrainerEntityRepository trainerEntityRepository;
+    private ProfileEntityRepository profileEntityRepository;
+
+    @Autowired
+    public TrainerController(TrainerEntityRepository trainerEntityRepository, ProfileEntityRepository profileEntityRepository){
+        this.trainerEntityRepository = trainerEntityRepository;
+        this.profileEntityRepository = profileEntityRepository;
+    }
+
     @GetMapping("/trainers/all")
     public ResponseEntity<?> allTrainers() {
-        List<TrainerEntity> list = TrainerDAO.getAll();
-        return new ResponseEntity(list, HttpStatus.OK);
+        return new ResponseEntity(trainerEntityRepository.findAll(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/trainers", params = {"id"})
     public ResponseEntity<?> trainers(@RequestParam(value = "id") Integer id) {
-        TrainerEntity entity = TrainerDAO.findById(id);
-        return new ResponseEntity(entity, HttpStatus.OK);
+        return new ResponseEntity(trainerEntityRepository.findById(id).get(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/trainers", produces = "application/json", consumes = "application/json")
@@ -35,11 +45,30 @@ public class TrainerController {
         int profileId = Integer.valueOf(data.get("profileByProfileId").toString());
         if (action.equals("update")) {
             int id = Integer.valueOf(data.get("trainerId").toString());
-            TrainerDAO.update(id, name, surname, age, profileId);
+
+            TrainerEntity trainerEntity = trainerEntityRepository.findById(id).get();
+            trainerEntity.setName(name);
+            trainerEntity.setSurname(surname);
+            trainerEntity.setAge(age);
+
+            ProfileEntity profile = profileEntityRepository.findById(profileId).get();
+
+            trainerEntity.setProfileByProfileId(profile);
+
+            trainerEntityRepository.save(trainerEntity);
 
             return new ResponseEntity(HttpStatus.OK);
         } else {
-            TrainerDAO.add(name, surname, age, profileId);
+            TrainerEntity trainerEntity = new TrainerEntity();
+            trainerEntity.setName(name);
+            trainerEntity.setSurname(surname);
+            trainerEntity.setAge(age);
+
+            ProfileEntity profile = profileEntityRepository.findById(profileId).get();
+
+            trainerEntity.setProfileByProfileId(profile);
+
+            trainerEntityRepository.save(trainerEntity);
 
             return new ResponseEntity(HttpStatus.OK);
         }
@@ -48,7 +77,7 @@ public class TrainerController {
     @GetMapping("/trainers/remove")
     public ResponseEntity<?> removeProfiles(@RequestParam(value = "id") Integer id) {
         try {
-            TrainerDAO.remove(id);
+            trainerEntityRepository.deleteById(id);
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

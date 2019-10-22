@@ -47,7 +47,7 @@ public class MainConfiguration extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable().
                 authorizeRequests().antMatchers("/", "/login", "/logout", "/registration", "/reset").permitAll();
 
-        http.authorizeRequests().anyRequest().authenticated();
+        http.authorizeRequests().antMatchers("/profiles", "/trainers", "/clients", "/client_sessions", "/sessions", "lobbies").authenticated();
 
         http.formLogin()
                 .loginPage("/login")
@@ -55,7 +55,5 @@ public class MainConfiguration extends WebSecurityConfigurerAdapter {
                 .usernameParameter("username")
                 .passwordParameter("password");
         http.logout().permitAll().logoutUrl("/logout").invalidateHttpSession(true);
-
-        http.authorizeRequests().antMatchers("/js/**").permitAll();
     }
 }

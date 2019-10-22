@@ -3,7 +3,7 @@ package demo.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "trainer", schema = "public", catalog = "SportDB")
+@Table(name = "trainer", schema = "public")
 public class TrainerEntity {
     private int trainerId;
     private String name;
@@ -13,7 +13,7 @@ public class TrainerEntity {
 
     @Id
     @Column(name = "trainer_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator="trainerSeq")
     public int getTrainerId() {
         return trainerId;
     }

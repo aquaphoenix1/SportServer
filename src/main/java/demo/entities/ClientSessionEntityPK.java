@@ -8,6 +8,13 @@ public class ClientSessionEntityPK implements Serializable {
     private String mail;
     private int sessionId;
 
+    public ClientSessionEntityPK(){}
+
+    public ClientSessionEntityPK(String mail, int sessionId) {
+        this.mail = mail;
+        this.sessionId = sessionId;
+    }
+
     @Column(name = "mail", nullable = false, length = -1)
     @Id
     public String getMail() {

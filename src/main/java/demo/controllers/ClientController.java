@@ -1,7 +1,11 @@
 package demo.controllers;
 
-import demo.dao.ClientDAO;
+//import demo.dao.ClientDAO;
+import demo.dao.repository.ClientEntityRepository;
+import demo.dao.repository.TrainerEntityRepository;
 import demo.entities.ClientEntity;
+import demo.entities.TrainerEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,16 +16,25 @@ import java.util.List;
 @CrossOrigin
 @RestController
 public class ClientController {
+    private ClientEntityRepository clientEntityRepository;
+    private TrainerEntityRepository trainerEntityRepository;
+
+    @Autowired
+    public ClientController(ClientEntityRepository clientEntityRepository, TrainerEntityRepository trainerEntityRepository){
+        this.clientEntityRepository = clientEntityRepository;
+        this.trainerEntityRepository = trainerEntityRepository;
+    }
+
     @GetMapping("/clients/all")
     public ResponseEntity<?> clients() {
-        List<ClientEntity> list = ClientDAO.getAll();
+        List<ClientEntity> list = (List<ClientEntity>) clientEntityRepository.findAll();
         list.forEach(x -> x.setPassword(""));
         return new ResponseEntity(list, HttpStatus.OK);
     }
 
     @GetMapping(value = "/clients", params = {"id"})
     public ResponseEntity<?> profiles(@RequestParam(value = "id") String id) {
-        ClientEntity client = ClientDAO.findById(id);
+        ClientEntity client = clientEntityRepository.findById(id).get();
         client.setPassword("");
         return new ResponseEntity(client, HttpStatus.OK);
     }
@@ -39,7 +52,21 @@ public class ClientController {
         if (trainer != null) {
             trainerId = Integer.valueOf(trainer.toString());
         }
-        ClientDAO.update(email, name, surname, age, trainerId);
+
+        ClientEntity clientEntity = clientEntityRepository.findById(email).get();
+        clientEntity.setName(name);
+        clientEntity.setSurname(surname);
+        clientEntity.setAge(age);
+
+        TrainerEntity trainerEntity = null;
+
+        if(trainerId != null) {
+            trainerEntity = trainerEntityRepository.findById(trainerId).get();
+        }
+
+        clientEntity.setTrainerByTrainerId(trainerEntity);
+
+        clientEntityRepository.save(clientEntity);
 
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -47,7 +74,7 @@ public class ClientController {
     @GetMapping("/clients/remove")
     public ResponseEntity<?> removeProfiles(@RequestParam(value = "id") String id) {
         try {
-            ClientDAO.remove(id);
+            clientEntityRepository.deleteById(id);
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

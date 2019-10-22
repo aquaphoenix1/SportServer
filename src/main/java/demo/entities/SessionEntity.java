@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "session", schema = "public", catalog = "SportDB")
+@Table(name = "session", schema = "public")
 public class SessionEntity {
     private int sessionId;
     private int price;
@@ -14,7 +14,7 @@ public class SessionEntity {
     private LobbyEntity lobbyByLobbyId;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator="sessionSeq")
     @Column(name = "session_id", nullable = false)
     public int getSessionId() {
         return sessionId;
