@@ -9,5 +9,8 @@
         <module name="antoshka" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="antoshka" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

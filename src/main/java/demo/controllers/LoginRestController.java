@@ -64,6 +64,9 @@
 package demo.controllers;
 
 //import demo.dao.ClientDAO;
+import demo.dao.repository.ClientEntityRepository;
+import demo.entities.ClientEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -75,6 +78,13 @@ import java.util.LinkedHashMap;
 @CrossOrigin
 @RestController
 public class LoginRestController {
+    private ClientEntityRepository clientEntityRepository;
+
+    @Autowired
+    public LoginRestController(ClientEntityRepository clientEntityRepository) {
+        this.clientEntityRepository = clientEntityRepository;
+    }
+
     private static String encode(String password) {
         return new BCryptPasswordEncoder().encode(password);
     }
@@ -102,7 +112,13 @@ public class LoginRestController {
         int age = Integer.valueOf(entity.get("age").toString());
 
         try {
-            //ClientDAO.save(email, password, name, surname, age);
+            ClientEntity clientEntity = new ClientEntity();
+            clientEntity.setEmail(email);
+            clientEntity.setPassword(password);
+            clientEntity.setName(name);
+            clientEntity.setSurname(surname);
+            clientEntity.setAge(age);
+            clientEntityRepository.save(clientEntity);
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -116,7 +132,9 @@ public class LoginRestController {
         String password = encode(entity.get("password").toString());
 
         try {
-            //ClientDAO.updatePassword(email, password);
+            ClientEntity clientEntity = clientEntityRepository.findById(email).get();
+            clientEntity.setPassword(password);
+            clientEntityRepository.save(clientEntity);
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

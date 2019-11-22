@@ -45,15 +45,16 @@ public class MainConfiguration extends WebSecurityConfigurerAdapter {
         http.cors()
                 .and().httpBasic()
                 .and().csrf().disable().
-                authorizeRequests().antMatchers("/", "/login", "/logout", "/registration", "/reset").permitAll();
+                authorizeRequests().antMatchers("/", "/login", "/logout", "/registration", "/reset", "/login/*").permitAll();
 
-        http.authorizeRequests().antMatchers("/profiles", "/trainers", "/clients", "/client_sessions", "/sessions", "lobbies").authenticated();
+        http.authorizeRequests().antMatchers("/profiles", "/trainers", "/clients", "/client_sessions", "/sessions", "/lobbies").permitAll();
+        http.authorizeRequests().antMatchers("/profiles/*", "/trainers/*", "/clients/*", "/client_sessions/*", "/sessions/*", "/lobbies/*").authenticated();
 
         http.formLogin()
                 .loginPage("/login")
                 .failureUrl("/login?error=true")
                 .usernameParameter("username")
                 .passwordParameter("password");
-        http.logout().permitAll().logoutUrl("/logout").invalidateHttpSession(true);
+        http.logout().permitAll().logoutUrl("/logout");
     }
 }
